@@ -1,5 +1,4 @@
 # Buscaminas,Programa de Bustos Daniel.
-from operator import truediv
 from random import randrange
 from tkinter.font import BOLD
 from turtle import Turtle,Screen, delay
