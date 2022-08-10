@@ -19,7 +19,7 @@ def dibuja_tablero(filas,columnas):
   for i in range(filas):
     for j in range(columnas):
         tortuga.penup()
-        tortuga.goto(1*j,(i*1)+1)
+        
         dibuja_celda(i,j)
 
 def coloca_damas(filas,columnas):
@@ -55,7 +55,7 @@ def dibuja_celda(y,x):
     
     tortuga.begin_fill()
     if simbolo[y][x] == celdavacia:
-       
+       tortuga.goto(1*x,(y*1)+1)
        if (y+x) % 2 == 0: 
         cuadrado("brown")
        else:
@@ -76,47 +76,133 @@ def dibuja_celda(y,x):
 
 def mov_Potenciales(y,x):
   global columnas,simbolo,tablero
-  resultado = [] 
-  if turno1:
+  
+  if turno1: #Rojas
     if y > 0:
         if x > 0 and not tablero[y-1][x-1] :
             simbolo[y-1][x-1] = celdapotencial
-            resultado.append([y-1,x-1])
+            dibuja_celda(y-1,x-1)
         if x < columnas - 1 and not tablero[y-1][x+1]:
             simbolo[y-1][x+1] = celdapotencial
-            resultado.append([y-1,x+1])
-    for i in range(len(resultado)):
-        
-        dibuja_celda(resultado[i])
-  elif not turno1:
+            dibuja_celda(y-1,x+1)
+    #Comer
+    if y > 1:    
+        if x > 1 and tablero[y-1][x-1] and simbolo[y-1][x-1] == celdanegra:
+             simbolo[y-2][x-2] = celdapotencial
+             dibuja_celda(y-2,x-2)
+        if x < columnas-2 and tablero[y-1][x+1] and simbolo[y-1][x+1] == celdanegra:
+             simbolo[y-2][x+2] = celdapotencial
+             dibuja_celda(y-2,x+2)     
+  
+  elif not turno1: #negras
    
    if y < columnas - 1:
         if x > 0 and not tablero[y+1][x-1]:
             simbolo[y+1][x-1] = celdapotencial
-            resultado.append([y+1,x-1]) 
+            dibuja_celda(y+1,x-1)
+        if x < columnas - 1 and not tablero[y+1][x+1]:
+            simbolo[y+1][x+1] = celdapotencial
+            dibuja_celda(y+1,x+1)
+   #comer
+   if y < columnas -2:    
+        if x > 1 and tablero[y+1][x-1] and simbolo[y+1][x-1] == celdaroja:
+             simbolo[y+2][x-2] = celdapotencial
+             dibuja_celda(y+2,x-2)
+        if x < columnas-2 and tablero[y+1][x+1] and simbolo[y+1][x+1] == celdaroja:
+             simbolo[y+2][x+2] = celdapotencial
+             dibuja_celda(y+2,x+2)     
+     
+        
+ 
+
+def limpiar_potenciales(y,x):
+  global columnas,simbolo,tablero
+  
+  if turno1:
+    if y > 0:
+        if x > 0 and not tablero[y-1][x-1] :
+            simbolo[y-1][x-1] = celdasinnada
+            dibuja_celda(y-1,x-1)
         if x < columnas - 1 and not tablero[y-1][x+1]:
-            simbolo[y-1][x+1] = celdapotencial
-            resultado.append([y+1,x+1])
-        if x < columnas - 1:
-            simbolo[y-1][x+1] = celdapotencial
-            resultado.append([y-1,y-1])
-   for i in range(len(resultado)):
-        
-        dibuja_celda(resultado[i][0],resultado[i][1])
-        
+            simbolo[y-1][x+1] = celdasinnada    
+            dibuja_celda(y-1,x+1)
+    if y > 1:    
+        if x > 1 and tablero[y-1][x-1] and simbolo[y-1][x-1] == celdanegra:
+             simbolo[y-2][x-2] = celdasinnada
+             dibuja_celda(y-2,x-2)
+        if x < columnas-2 and tablero[y-1][x+1] and simbolo[y-1][x+1] == celdanegra:
+             simbolo[y-2][x+2] = celdasinnada
+             dibuja_celda(y-2,x+2)
+  elif not turno1:
+   
+   if y < columnas - 1:
+        if x > 0 and not tablero[y+1][x-1]:
+            simbolo[y+1][x-1] = celdasinnada
+            dibuja_celda(y+1,x-1)
+        if x < columnas - 1 and not tablero[y+1][x+1]:
+            simbolo[y+1][x+1] = celdasinnada
+            dibuja_celda(y+1,x+1)  
+   if y > columnas -2:    
+        if x > 1 and tablero[y+1][x-1] and simbolo[y+1][x-1] == celdaroja:
+             simbolo[y-2][x-2] = celdasinnada
+             dibuja_celda(y-2,x-2)
+        if x < columnas-2 and tablero[y+1][x+1] and simbolo[y+1][x+1] == celdaroja:
+             simbolo[y-2][x+2] = celdasinnada
+             dibuja_celda(y-2,x+2)    
 
           
         
 def click(x,y):
-    global tablero,simbolo, turno1
+    global pantalla,tablero,simbolo, turno1,ficha_elegida,ficha_select
+    pantalla.onclick(None)
     j,i = int(x) , int(y)
     if 0 <= i < len(tablero) and 0 <= j < len(tablero[0]):
-      if ficha_select:
-         return
-      elif tablero[i][j]:
-        mov_Potenciales(i,j)
+      
+      if ficha_select: # Si hay una ficha ya elegida
+         
+        if simbolo[i][j] == celdapotencial: #Me muevo a la elegida si esta en las posibles
+            limpiar_potenciales(ficha_elegida[0],ficha_elegida[1])
+            simbolo[i][j] = ficha_elegida[2]
+            tablero[i][j] = True
+            dibuja_celda(i,j)
+            simbolo[ficha_elegida[0]][ficha_elegida[1]] = celdasinnada
+            tablero[ficha_elegida[0]][ficha_elegida[1]] = False
+            dibuja_celda(ficha_elegida[0],ficha_elegida[1])
+            ficha_select = False
 
+            if turno1:
+                turno1 = False
+            else:
+                turno1 = True
+        
+        elif (simbolo[i][j] != celdapotencial): 
+         limpiar_potenciales(ficha_elegida[0],ficha_elegida[1])
+         if (i == ficha_elegida[0] and j == ficha_elegida[1]):  #limpio las potenciales al tocar de vuelta la misma
+            ficha_select = False
+            ficha_elegida = [None,None,None]
+         elif simbolo[i][j] == ficha_elegida[2]: #cambio a la nueva ficha
+            elegirficha(i,j)
+        
+        
+
+      
+      elif tablero[i][j]: #Elijo una ficha para moverme
+        elegirficha(i,j)
+        
+    pantalla.onclick(click)
  
+def elegirficha(i,j):
+    global ficha_elegida,ficha_select,simbolo
+    if simbolo[i][j] == celdanegra and not turno1:
+            ficha_elegida = [i,j,celdanegra]
+            ficha_select = True
+            mov_Potenciales(i,j)
+            
+    elif simbolo[i][j] == celdaroja and turno1:
+            ficha_elegida = [i,j,celdaroja]
+            ficha_select = True
+            mov_Potenciales(i,j)
+            
         
 
 filas,columnas = 8,8
