@@ -110,7 +110,8 @@ def mov_Potenciales(y,x):
              dibuja_celda(y+2,x-2)
         if x < columnas-2 and tablero[y+1][x+1] and simbolo[y+1][x+1] == celdaroja:
              simbolo[y+2][x+2] = celdapotencial
-             dibuja_celda(y+2,x+2)     
+             dibuja_celda(y+2,x+2)
+                  
      
         
  
@@ -142,13 +143,13 @@ def limpiar_potenciales(y,x):
         if x < columnas - 1 and not tablero[y+1][x+1]:
             simbolo[y+1][x+1] = celdasinnada
             dibuja_celda(y+1,x+1)  
-   if y > columnas -2:    
+   if y < columnas -2:    
         if x > 1 and tablero[y+1][x-1] and simbolo[y+1][x-1] == celdaroja:
-             simbolo[y-2][x-2] = celdasinnada
-             dibuja_celda(y-2,x-2)
+             simbolo[y+2][x-2] = celdasinnada
+             dibuja_celda(y+2,x-2)
         if x < columnas-2 and tablero[y+1][x+1] and simbolo[y+1][x+1] == celdaroja:
-             simbolo[y-2][x+2] = celdasinnada
-             dibuja_celda(y-2,x+2)    
+             simbolo[y+2][x+2] = celdasinnada
+             dibuja_celda(y+2,x+2)    
 
           
         
@@ -168,6 +169,7 @@ def click(x,y):
             simbolo[ficha_elegida[0]][ficha_elegida[1]] = celdasinnada
             tablero[ficha_elegida[0]][ficha_elegida[1]] = False
             dibuja_celda(ficha_elegida[0],ficha_elegida[1])
+            
             ficha_select = False
 
             if turno1:
