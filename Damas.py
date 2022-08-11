@@ -59,7 +59,7 @@ def dibuja_celda(y,x):
        if (y+x) % 2 == 0: 
         cuadrado("brown")
        else:
-        cuadrado("gray")
+        cuadrado("white")
     elif simbolo[y][x] == celdapotencial:
        tortuga.goto(x+.5,y) 
        tortuga.fillcolor("green")
@@ -75,8 +75,10 @@ def dibuja_celda(y,x):
     tortuga.end_fill()
 
 def mov_Potenciales(y,x):
-  global columnas,simbolo,tablero
-  
+  global columnas,simbolo,tablero, potenciales_comer,potenciales_comidas
+  potenciales_comer = []
+  potenciales_comidas = []
+
   if turno1: #Rojas
     if y > 0:
         if x > 0 and not tablero[y-1][x-1] :
@@ -87,12 +89,19 @@ def mov_Potenciales(y,x):
             dibuja_celda(y-1,x+1)
     #Comer
     if y > 1:    
-        if x > 1 and tablero[y-1][x-1] and simbolo[y-1][x-1] == celdanegra:
+        if x > 1 and tablero[y-1][x-1] and simbolo[y-1][x-1] == celdanegra and not tablero[y-2][x-2]:
              simbolo[y-2][x-2] = celdapotencial
              dibuja_celda(y-2,x-2)
-        if x < columnas-2 and tablero[y-1][x+1] and simbolo[y-1][x+1] == celdanegra:
+             
+             potenciales_comer.append([y-2,x-2])
+             potenciales_comidas.append([y-1,x-1])
+             
+        if x < columnas-2 and tablero[y-1][x+1] and simbolo[y-1][x+1] == celdanegra and not tablero[y-2][x+2]:
              simbolo[y-2][x+2] = celdapotencial
-             dibuja_celda(y-2,x+2)     
+             dibuja_celda(y-2,x+2)  
+
+             potenciales_comer.append([y-2,x+2])
+             potenciales_comidas.append([y-1,x+1])   
   
   elif not turno1: #negras
    
@@ -105,12 +114,16 @@ def mov_Potenciales(y,x):
             dibuja_celda(y+1,x+1)
    #comer
    if y < columnas -2:    
-        if x > 1 and tablero[y+1][x-1] and simbolo[y+1][x-1] == celdaroja:
+        if x > 1 and tablero[y+1][x-1] and simbolo[y+1][x-1] == celdaroja and not tablero[y+2][x-2]:
              simbolo[y+2][x-2] = celdapotencial
              dibuja_celda(y+2,x-2)
-        if x < columnas-2 and tablero[y+1][x+1] and simbolo[y+1][x+1] == celdaroja:
+             potenciales_comer.append([y+2,x-2])
+             potenciales_comidas.append([y+1,x-1])
+        if x < columnas-2 and tablero[y+1][x+1] and simbolo[y+1][x+1] == celdaroja and not tablero[y+2][x+2]:
              simbolo[y+2][x+2] = celdapotencial
              dibuja_celda(y+2,x+2)
+             potenciales_comer.append([y+2,x+2])
+             potenciales_comidas.append([y+1,x+1])
                   
      
         
@@ -121,33 +134,33 @@ def limpiar_potenciales(y,x):
   
   if turno1:
     if y > 0:
-        if x > 0 and not tablero[y-1][x-1] :
+        if x > 0 and simbolo[y-1][x-1] == celdapotencial :
             simbolo[y-1][x-1] = celdasinnada
             dibuja_celda(y-1,x-1)
-        if x < columnas - 1 and not tablero[y-1][x+1]:
+        if x < columnas - 1 and simbolo[y-1][x+1] == celdapotencial:
             simbolo[y-1][x+1] = celdasinnada    
             dibuja_celda(y-1,x+1)
     if y > 1:    
-        if x > 1 and tablero[y-1][x-1] and simbolo[y-1][x-1] == celdanegra:
+        if x > 1 and simbolo[y-2][x-2] == celdapotencial:
              simbolo[y-2][x-2] = celdasinnada
              dibuja_celda(y-2,x-2)
-        if x < columnas-2 and tablero[y-1][x+1] and simbolo[y-1][x+1] == celdanegra:
+        if x < columnas-2 and simbolo[y-2][x+2] == celdapotencial:
              simbolo[y-2][x+2] = celdasinnada
              dibuja_celda(y-2,x+2)
   elif not turno1:
    
    if y < columnas - 1:
-        if x > 0 and not tablero[y+1][x-1]:
+        if x > 0 and simbolo[y+1][x-1] == celdapotencial:
             simbolo[y+1][x-1] = celdasinnada
             dibuja_celda(y+1,x-1)
-        if x < columnas - 1 and not tablero[y+1][x+1]:
+        if x < columnas - 1 and simbolo[y+1][x+1] == celdapotencial:
             simbolo[y+1][x+1] = celdasinnada
             dibuja_celda(y+1,x+1)  
    if y < columnas -2:    
-        if x > 1 and tablero[y+1][x-1] and simbolo[y+1][x-1] == celdaroja:
+        if x > 1 and simbolo[y+2][x-2] == celdapotencial:
              simbolo[y+2][x-2] = celdasinnada
              dibuja_celda(y+2,x-2)
-        if x < columnas-2 and tablero[y+1][x+1] and simbolo[y+1][x+1] == celdaroja:
+        if x < columnas-2 and simbolo[y+2][x+2] == celdapotencial:
              simbolo[y+2][x+2] = celdasinnada
              dibuja_celda(y+2,x+2)    
 
@@ -169,7 +182,9 @@ def click(x,y):
             simbolo[ficha_elegida[0]][ficha_elegida[1]] = celdasinnada
             tablero[ficha_elegida[0]][ficha_elegida[1]] = False
             dibuja_celda(ficha_elegida[0],ficha_elegida[1])
-            
+            ficha_comida(i,j)
+       
+
             ficha_select = False
 
             if turno1:
@@ -204,7 +219,14 @@ def elegirficha(i,j):
             ficha_elegida = [i,j,celdaroja]
             ficha_select = True
             mov_Potenciales(i,j)
-            
+
+def ficha_comida(y,x):
+     for z in range(len(potenciales_comer)):
+                if y == potenciales_comer[z][0] and x == potenciales_comer[z][1]:
+                    simbolo[potenciales_comidas[z][0]][potenciales_comidas[z][1]] = celdasinnada
+                    tablero[potenciales_comidas[z][0]][potenciales_comidas[z][1]] = False
+                    dibuja_celda(potenciales_comidas[z][0],potenciales_comidas[z][1])
+                    return          
         
 
 filas,columnas = 8,8
@@ -213,6 +235,8 @@ celdasinnada,celdapotencial,celdanegra,celdaroja = 0,1,2,3
 turno1 = True
 ficha_select = False
 ficha_elegida = [None,None]
+potenciales_comer = []
+potenciales_comidas = []
 pantalla = Screen()
 pantalla.setup(filas*50,columnas*50)
 pantalla.screensize(filas*50,columnas*50)
