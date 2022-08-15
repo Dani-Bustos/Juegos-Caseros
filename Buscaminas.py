@@ -175,7 +175,7 @@ def Ganar():
     tortuga.penup()
     tortuga.color("Orange")
     tortuga.goto(columnas/2,filas/2)
-    tortuga.write("Ganaste", font=("arial",50,"bold"), align="center")
+    tortuga.write("Ganaste", font=("arial",int((filas*columnas)*1.5),"bold"), align="center")
     pantalla.exitonclick()
     
 
@@ -200,7 +200,7 @@ def mostrar_minas():
                         tortuga.end_fill()
             tortuga.goto(columnas/2,filas/2)
             tortuga.color("blue")
-            tortuga.write("Perdiste :(", font=("arial", 50,"bold"), align= "center")       
+            tortuga.write("Perdiste :(", font=("arial", int((filas*columnas)*1.5),"bold"), align= "center")       
             pantalla.exitonclick()
             
 
