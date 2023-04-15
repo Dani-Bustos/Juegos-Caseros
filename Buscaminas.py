@@ -2,7 +2,7 @@
 
 from random import randrange
 from tkinter.font import BOLD
-from turtle import Turtle,Screen, delay
+from turtle import Turtle,Screen, delay, colormode
 from time import sleep
 def crea_matriz(filas,columnas):
     
@@ -59,6 +59,7 @@ def dibuja_tablero(tablero):
 
 def dibuja_celda(i,j):
     global tortuga,simbolo
+    colores = [(232,202,202), (255,229,168),(248,255,151),(188,255,164),(166,255,211),(185,227,255),(193,204,255), (228,207,255),(241,206,244)]
     
     tortuga.penup()
     tortuga.goto(j +.5,i)
@@ -116,7 +117,9 @@ def dibuja_celda(i,j):
         tortuga.fillcolor("red")
         tortuga.circle(.5)        
     else:
-        tortuga.fillcolor("gray")
+        # Asigna color en base a la lista de colores, usando el modulo de la longitud de la misma. 
+        #aka te hace un buscaminas trolo
+        tortuga.fillcolor(colores[j % len(colores)])
         tortuga.circle(.5)
     tortuga.end_fill()
     tortuga.pendown()
@@ -286,6 +289,8 @@ pantalla.delay(0)
 pantalla.setup(columnas*50,filas*50)
 pantalla.screensize(columnas*50,filas*50)
 pantalla.setworldcoordinates(-.5,-.5,columnas+.5,filas+.5)
+colormode(255) #habilita uso de rgb
+
 tortuga = Turtle()
 tortuga.hideturtle()
 
